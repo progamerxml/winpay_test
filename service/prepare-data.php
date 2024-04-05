@@ -1,5 +1,6 @@
 <?php
 
+$data = array();
 function prepareData($data){
     $data["customerNo"]  = $_GET["nomorCustomer"];
     $data["virtualAccountName"]  = $_GET["namaVA"];
@@ -10,6 +11,9 @@ function prepareData($data){
     $data["additionalInfo"] = [
         "channel" => $_GET["channel"]
     ];
+
+    json_encode($data);
+    return $data;
 }
 
 // request create va

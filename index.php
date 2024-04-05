@@ -1,14 +1,13 @@
 <?php
+require __DIR__ . "/service/prepare-data.php";
+require __DIR__ . "/service/set_header.php";
+require __DIR__ . "/service/create-va.php";
+require __DIR__ . "/service/inquiry-va.php";
+require __DIR__ . "/service/payment-va.php";
 
-$data = [];
 if(isset($_GET)){
-    $data["customerNo"]  = $_GET["nomorCustomer"];
-    $data["virtualAccountName"]  = $_GET["namaVA"];
-    $data["trxId"]  = $_GET["trxId"];
-    $data["totalAmount"]  = ["value" => $_GET["value"], "curracy" => "IDR"];
-    $data["virtualAccountTrxType"]  = $_GET["vaTrxType"];
-    $data["expiredDate"]  = $_GET["expiredDate"];
-    $data["additionalInfo"] = [
-        "channel" => $_GET["channel"]
-    ];
+    $dataCus = prepareData($_GET);
+    $header = setHeader($GET);
+    $createVa = createVa($dataCus, $header);
+    var_dump($dataCus);
 }
