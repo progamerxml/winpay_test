@@ -1,21 +1,46 @@
 <?php
-// Data yang akan ditandatangani
-$data = "Hello, world!";
+require __DIR__ . "/../config/privateKey.php";
 
-// Load private key
-$private_key = openssl_pkey_get_private("file://path/to/private_key.pem");
+function get_signature($data, $url)
+{
+    $httpMethod = 'POST';
+    $endpointUrl = $url;
+    $timestamp = $data['timestamp'];
+    $payload  = '
+    {
+        "customerNo": "'.$data['customerNo'].'",
+        "virtualAccountName": "'.$data['virtualAccountName'].'",
+        "trxId": "'.$data['trxId'].'",
+        "totalAmount": {
+            "value": "'.$data['value'].'",
+            "currency": "'.$data['currency'].'"
+        },
+        "virtualAccountTrxType": "'.$data['virtualAccountTrxType'].'",
+        "expiredDate": "'.$data['expiredDate'].'",
+        "additionalInfo": {
+            "channel": "'.$data['channel'].'"
+        }
+    }
+    ';
+    
+    $body = json_decode($payload);
+    $hashedBody = strtolower(bin2hex(hash('sha256', json_encode($body, JSON_UNESCAPED_SLASHES), true)));
+    
+    $stringToSign = [
+        $httpMethod,
+        $endpointUrl,
+        $hashedBody,
+        $timestamp
+    ];
+    
+    $signature = '';
+    $stringToSign = implode(':', $stringToSign);
 
-// Buat tanda tangan digital menggunakan algoritma SHA256withRSA
-if (openssl_sign($data, $signature, $private_key, OPENSSL_ALGO_SHA256)) {
-    echo "Tanda tangan digital berhasil dibuat.\n";
+    $string_privKey = getPrivateKey();
 
-    // Konversi tanda tangan ke format base64 agar mudah dibaca
-    $signature_base64 = base64_encode($signature);
-    echo "Tanda tangan digital (Base64): " . $signature_base64 . "\n";
-} else {
-    echo "Gagal membuat tanda tangan digital.\n";
+    $privKey = openssl_get_privatekey($string_privKey);
+    openssl_sign($stringToSign, $signature, $privKey, OPENSSL_ALGO_SHA256);
+    $encodedSignature = base64_encode($signature);
+
+    return $encodedSignature;
 }
-
-// Hapus kunci dari memori
-openssl_free_key($private_key);
-?>
