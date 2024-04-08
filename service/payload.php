@@ -13,7 +13,7 @@ $output = trim(base64_encode($output));
 return $output;
 }
 
-function createPayload(){
+function getPayload($data){
     $token = "1bdac877ec6294c98e8f105d739370fe";
     $json_string = '{
       "cms": "WINPAY API",
@@ -27,13 +27,6 @@ function createPayload(){
           "qty": 2,
           "unitPrice": 20000,
           "desc": "Baju Tidur"
-        },
-        {
-          "name": "Baju Jogja",
-          "sku": "01020305",
-          "qty": 1,
-          "unitPrice": 10000,
-          "desc": "Baju Olahraga"
         }
       ],
       "spi_amount": 50000,
@@ -48,4 +41,5 @@ function createPayload(){
     }';
     $messageEncrypted = OpenSSLEncrypt($json_string, $token);
     $orderdata = substr($messageEncrypted, 0, 10). $token. substr($messageEncrypted, 10);
+    return $orderdata;
 }
