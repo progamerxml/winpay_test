@@ -17,3 +17,24 @@ function getPrivateKey(){
     HX7BkUUrdBHLI/nZ2y2rXSdPnf3ISs6l/YvFFNa5q3o=
     -----END RSA PRIVATE KEY-----";
 }
+
+function getConfigKey()
+{
+    return [
+        "private_key1" => "4d0cba482565a4380286a87848fac600",
+        "private_key2" => "2005607b7ba79d210ef38d1c36b433cc",
+        "merchant_key" => "be9b9ccbe06adbdab536a45a25f22132",
+        "url devel" => "https://sandbox-payment.winpay.id",
+        "url production" => "https://secure-payment.winpay.id"
+    ];
+}
+
+function getPrivateKeyOld()
+{
+    $key = getConfigKey();
+    $private_key1 = $key['private_key1'];
+    $private_key2 = $key['private_key2'];
+    $base64_encoded_private_key = base64_encode($private_key1 . ":" . $private_key2);
+
+    return $base64_encoded_private_key;
+}

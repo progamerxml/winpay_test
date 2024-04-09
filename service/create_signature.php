@@ -44,3 +44,18 @@ function get_signature($data, $url)
 
     return $encodedSignature;
 }
+
+function getSignatureOld($data)
+{
+    $key = getConfigKey();
+    $merchant_key = $key['merchant_key'];
+    $private_key1 = $key['private_key1'];
+    $private_key2 = $key['private_key2'];
+    $spi_token = $private_key1.$private_key2;
+    $spi_merchant_transaction_reff = "$data[transaction_reff]";
+    $spi_amount = "$data[amount]";
+    $spi_amount = number_format(doubleval($spi_amount),2,".","");
+    $spi_signature = strtoupper(sha1( $spi_token . '|' . $merchant_key . '|' . $spi_merchant_transaction_reff . '|' . $spi_amount . '|0|0' ));
+
+    return $spi_signature;
+}

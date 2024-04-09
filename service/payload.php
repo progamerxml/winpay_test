@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__ . "/../config/baseUrl.php";
+
 function OpenSSLEncrypt($message, $key)
 {
 $output = false;
@@ -14,29 +16,30 @@ return $output;
 }
 
 function getPayload($data){
-    $token = "1bdac877ec6294c98e8f105d739370fe";
+    $url = get_env();
+    $token = getToken($url);
     $json_string = '{
       "cms": "WINPAY API",
       "spi_callback": "https://sandbox-payment.winpay.id/sandbox",
       "url_listener": "https://sandbox-payment.winpay.id/sandbox/url_listener.php",
-      "spi_currency": "IDR",
+      "spi_currency": "' . $data['currency'] . '",
       "spi_item": [
         {
-          "name": "Baju Bali",
-          "sku": "01020304",
-          "qty": 2,
-          "unitPrice": 20000,
-          "desc": "Baju Tidur"
+          "name": "' . $data['name'] . '",
+          "sku": "' . $data['sku'] . '",
+          "qty": ' . $data['qty'] . ',
+          "unitPrice": ' . $data['unitPrice'] . ',
+          "desc": "' . $data['desc'] . '"
         }
       ],
-      "spi_amount": 50000,
-      "spi_signature": "38697D628FAF2806FCD1844DC895C50CB631C38E",
-      "spi_token": "4d0cba482565a4380286a87848fac6002005607b7ba79d210ef38d1c36b433cc",
-      "spi_merchant_transaction_reff": "5e4ce7cf7901234",
-      "spi_billingPhone": "081234567777",
-      "spi_billingEmail": "tester@gmail.com",
-      "spi_billingName": "Tester Winpay",
-      "spi_paymentDate": "20211231224623",
+      "spi_amount": ' . $data['spi_amount'] . ',
+      "spi_signature": "' . $data['spi_signature'] . '",
+      "spi_token": "' . $data['spi_token'] . '",
+      "spi_merchant_transaction_reff": "' . $data['spi_merchant_transaction_reff'] . '",
+      "spi_billingPhone": "' . $data['spi_billingPhone'] . '",
+      "spi_billingEmail": "' . $data['spi_billingEmail'] . '",
+      "spi_billingName": "' . $data['spi_billingName'] . '",
+      "spi_paymentDate": "' . $data['spi_paymentDate'] . '",
       "get_link": "no"
     }';
     $messageEncrypted = OpenSSLEncrypt($json_string, $token);
